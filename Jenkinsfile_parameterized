@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     parameters {
+       
         booleanParam(defaultValue: false, description: 'Build the project with Maven', name: 'mvn_build')
         booleanParam(defaultValue: false, description: 'Publish artifacts to Nexus', name: 'publish_to_nexus')
     }
@@ -31,8 +32,12 @@ pipeline {
         stage("mvn build") {
             steps {
                 script {
-                    // Always execute the Maven build
-                    sh '/opt/maven/bin/mvn -Dmaven.test.failure.ignore clean package'
+                    if (params.mvn_build) {
+                        // Build the project with Maven
+                        sh '/opt/maven/bin/mvn -Dmaven.test.failure.ignore clean package'
+                    } else {
+                        echo "No build"
+                    }
                 }
             }
         }
@@ -40,7 +45,6 @@ pipeline {
         stage("publish to nexus") {
             steps {
                 script {
-                    // Check if Nexus publish is requested
                     if (params.publish_to_nexus) {
                         // Read POM xml file using 'readMavenPom' step
                         pom = readMavenPom file: "pom.xml"
@@ -85,7 +89,7 @@ pipeline {
                             error "*** File: ${artifactPath}, could not be found"
                         }
                     } else {
-                        echo "Skipping Nexus upload as per parameter setting"
+                        echo "No build"
                     }
                 }
             }
