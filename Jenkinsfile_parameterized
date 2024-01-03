@@ -3,8 +3,8 @@ pipeline {
 
     parameters {
        
-        booleanParam(defaultValue: true, description: 'Build the project with Maven', name: 'mvn_build')
-        booleanParam(defaultValue: true, description: 'Publish artifacts to Nexus', name: 'publish_to_nexus')
+        booleanParam(defaultValue: false, description: 'Build the project with Maven', name: 'mvn_build')
+        booleanParam(defaultValue: false, description: 'Publish artifacts to Nexus', name: 'publish_to_nexus')
     }
 
     tools {
